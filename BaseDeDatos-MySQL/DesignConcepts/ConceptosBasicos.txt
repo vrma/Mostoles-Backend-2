@@ -14,3 +14,6 @@ tendran una llavesita al principio, ademas un campo que es PK no abmite valores 
 base de datos no quiere decir que sea una cadena vacia, ni un valor por defecto cero, NULL quiere decir desconocido y hay que tener mucho cuidado con los valores NULL y evitarlos en la medida de lo
 posible, porque al evaluar una expresion donde halla un valor NULL toda la expresion se puede 
 evaluar como NULL.
+
+UQ (Unique): No puede existir mas de una PK en la tabla, pero si varios campos UQ, que ademas
+si admite NULL en al menos un registro.
