@@ -23,3 +23,9 @@ En un sistema de Gestion de Bases de Datos Relacional, las tablas tienen/deben d
 ¿Que es una FK, Clave Extranjera o Foranea?
 
 Es un campo de una tabla que hace referencia a un campo de otra tabla, que es PK en dicha tabla, el nombre de los campos no tiene que ser igual pero si el tipo de datos.
+
+¿Como se crean las relaciones entre las tablas en el cliente de MySQL, es decir, en MySQL Workbench?
+
+Independiente de la cantidad de tablas que tengas, las relaciones se van creando de dos en dos tablas, y entre esas dos ttablas que vas a relacionar hay que seleccionar cual es la tabla hijo y cual es el padre. La tabla padre no depende de la tabla hijo, por ejemplo, en el caso de departamentos y empleados, puede existir el departamento sin empleados, por lo cual la tabla padre es departamentos. Tener en cuanta que esta relacion puede cambiar al ralacionar con otra tabla.
+En cualquier coso, una vez determinada la tabla hijo, nos ubicamos en la tabla hijo para crear la relacion, y podemos crear un campo en la tabla hijo que sera la FK o aceptar el campo que se puede crear por defecto. 
+Las relaciones pueden ser: De uno a muchos, por ejemplo, en un departamento muchos empleados, o tambien puede ser de muchos a muchos o de uno a uno. Y las herramientas que te facilitan la creacion de las relaciones estan a la derecha en una columan en el EER Diagram (Enhanced Entity Relationship Diagram).
