@@ -32,13 +32,34 @@ set @@lc_time_names = 'es_ES';
 
 use jardineria;
 
-/* VARIANTE # 1 de Solucion: 
+/* Para todas las variantes de solucion:
  * 
  * Consideramos el campo fecha_pedido de la tabla pedido */
 
-select *
+/* VARIANTE # 1 de Solucion: 
+ * 
+ * */
+
+explain select *
 from pedido
 where fecha_pedido >= date_sub(last_day(fecha_pedido), interval 5 day);
+
+/* VARIANTE #  2 
+ * 
+ * Utilizando el operador between */
+
+select *
+from pedido
+where fecha_pedido between date_sub(last_day(fecha_pedido), interval 5 day) and
+	last_day(fecha_pedido);
+
+/* VARIANTE # 3.
+ * 
+ * Utilizando la funcion DATEDIFF() */
+
+select *
+from pedido
+where datediff(last_day(fecha_pedido), fecha_pedido) <= 5;
 
 
 
