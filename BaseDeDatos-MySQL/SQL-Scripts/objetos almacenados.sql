@@ -197,6 +197,31 @@ select contar_productos("Ornamentales");
 
 select concat("El total de productos de la gama es: ", contar_productos("Ornamentales"));
 
+/* 
+	CARACTERISTICAS DE LA FUNCION 
+	
+    Despues de la definicion del tipo de dato que devolverá la funcion (RETURNS), tenemos que indicar las 
+    caracteristicas de la funcion. Las opciones disponibles son las siguientes:
+    
+    DETERMINISTIC: Una funcion es determinista si y solo si devuelve siempre el mismo resultado cuando se utilizan
+    los mismos parametros de entrada.
+    
+    NOT DETERMINISTIC: Una funcion es NO determinista si NO siempre devuelve el mismo resultado, aunque
+    se utilicen los mismos parametros de entrada. En muchos sistemas de Gestion de Base de Datos, es la
+    caracteristica que se selecciona por defecto si no se establece una caracteristica concreta, pero en
+    MySQL NO, hay que explicitamente establecer una caracteristica
+    
+    CONTAINS SQL: Indica que la funcion contiene sentencias de SQL, pero no contiene sentencias de Manipulacion
+    de datos (DML) (Data Modification Language) y tambien existe el grupo DDL (Data Definition Language)
+    
+    NO SQL: La funcion NO contiene sentencias de SQL
+    
+    READS SQL DATA: Indica que la funcion NO modifica los datos de la base de datos y que contiene sentencias de 
+    lectura de datos como la sentencia SELECT.
+    
+    MODIFIES SQL DATA: Indica que la funcion SI puede modificar los datos de las tablas de la base de datos,
+    puesto que contiene sentencias INSERT, DELETE, UPDATE
+*/
 
 
 
