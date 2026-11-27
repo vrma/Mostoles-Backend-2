@@ -76,20 +76,129 @@ BEGIN
 END$$
 DELIMITER ;
 
+/* Variante # 2 De guardar el resultado en el parametro de salida "total", en este caso */
+
+DELIMITER $$
+CREATE DEFINER=`root`@`%` PROCEDURE `contar_productos_variante_2`(in gama varchar(50), out total int)
+BEGIN
+	 set total = (select count(*) from producto p where p.gama = gama);
+END$$
+DELIMITER ;
+
+/* Variante # 3. La clausula INTO se ubica al final de la consulta, lo cual es muy util
+cuando queremos devolver varios valores, y veremos un ejemplo de ello en breve */
+
+DELIMITER $$
+CREATE DEFINER=`root`@`%` PROCEDURE `contar_productos_variante_3`(in gama varchar(50), out total int)
+BEGIN
+	 select count(*) from producto p where p.gama = gama into total;
+END$$
+DELIMITER ;
 
 
 /* Invocar el SP contar_productos */
 set @resultado = 0;
 call contar_productos(@x, @resultado);
 
-CALL `jardineria`.`contar_productos`(@x, @resultado);
+/* Invocando la Variante # 2 */
+CALL `jardineria`.`contar_productos_variante_2`(@x, @resultado);
 
+/* Invocando la Variante # 3 */
+CALL `jardineria`.`contar_productos_variante_3`(@x, @resultado);
 
 /* ¿Como consultar el parametro de salida o el resultado del SP anterior? */
 
 select @resultado `Total de Productos`;
 
 select concat("El total de productos de la gama: ", @x, ", es: ", @resultado);
+
+/* PARAMETROS DE UN PROCEDIMIENTO ALMACENADO 
+
+	1- Entrada (IN): Se indica poniendo la palabra IN delante del nombre del parametro. Los parametros de entrad
+    NO pueden cambiar su valor dentro de procedimiento, es decir, no se pueden modificar. En los lenguajes de 
+    programacion, como Java, por ejemplo, seria equivalente a pasar un parametro por valor.
+    2- Salida (OUT): Se indica poniendo la palabra OUT delante del nombre del parametro. Cuando se invoca el SP
+    empiezan con un valor inicial y cuando finaliza la ejecucion del SP pueden terminar con un valor diferente. 
+    En programacion es equivalente a pasar un parametro por referencia (se pasa la direccion de donde esta 
+    almacenado el valor, en lugar del valor en si).
+    3- Entra/Salida (INOUT): Es una combinacion de los tipos IN y OUT. 
+
+*/
+
+/* Tipos de VARIABLES en MySQL, y en SQL en general 
+
+	1- Variables locales: Se declaran utilizando la palabra reservada DECLARE dentro de un SP, una funcion, un 
+	Trigger, un Cursor, etc. La sintaxis es la siguiente: 
+    
+		DECLARE total INT UNSIGNED DEFAULT 10;
+        
+        IMPORTANTE!!! El alcance, ambito (scope) de validez de una variable local es el bloque (BEGIN .. END)
+        donde se declara.
+        
+    2- Variables definidas por el usuario en el ambito de la sesion: Se declaran precedidas por el caracte @
+       y tienen validez, alcance, ambito (scope), durante la sesion y, evidentemente, cuando se cierra la sesion
+       pierden su valor.
+		
+    3- Variables del sistema: Se utilizan para la configuracion de MySQL, y se declaran precedidas de @@. No se 
+    recomienda utilizar estos caracteres para declarar una variable de sesion. Ejemplo de variable del Sistema,
+    seria la siguiente, que hemos utilizado ya para establecer el idioma
+    
+    set @@GLOBAL.lc_time_names = 'es_ES';
+    
+*/
+
+/* Ejemplo de uso de variable LOCAL */
+
+DELIMITER $$
+CREATE DEFINER=`root`@`%` PROCEDURE `contar_productos_variante_3_con_variable_local`(in gama varchar(50), out total int)
+BEGIN
+	-- Ejemplo de declaracion de una variable local
+    declare temporal int unsigned default 0;
+	set temporal = (select count(*) from producto p where p.gama = gama);
+    
+    set total = temporal;
+END$$
+DELIMITER ;
+
+/* 
+	CREACION DE NUESTRA PRIMER FUNCION.
+
+	La sintaxis de la sentencia CREATE FUNCTION la podemos ver en la documentacion oficial:
+    
+    https://dev.mysql.com/doc/refman/8.4/en/create-procedure.html 
+    
+    Concretamente:
+    
+    Funcion que devuelve el total de productos de una gama que se recibe como parametro
+*/
+
+DELIMITER $$
+CREATE DEFINER=`root`@`%` FUNCTION `contar_productos`(gama varchar(50)) RETURNS int
+    DETERMINISTIC
+BEGIN
+	declare resultado int unsigned default 0;
+    set resultado = (select count(*) from producto p where p.gama = gama);
+	
+    RETURN resultado;
+END$$
+DELIMITER ;
+
+
+/* Para invocar la funcion NO se utiliza la sentencia CALL */
+
+set @xx = `jardineria`.`contar_productos`("Frutales");
+
+select concat("El resultado de la llamada a la funcion es: ", @xx);
+
+/* Recordando: Un funcion se puede invocar dentro de un sentencia SELECT y evaluarse
+en una expresion tambien */
+
+select contar_productos("Ornamentales");
+
+select concat("El total de productos de la gama es: ", contar_productos("Ornamentales"));
+
+
+
 
 
 
